@@ -1,0 +1,5 @@
+[web]
+webserver1 ansible_ssh_host=
+
+[db]
+database1 ansible_ssh_host=
