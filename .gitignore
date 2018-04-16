@@ -1,1 +1,3 @@
 inventory/master_list
+terraform/
+*.retry
