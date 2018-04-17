@@ -2,8 +2,11 @@
 # tasks file for webserver
 - name: Install apache
   yum:
-    name: httpd
+    name: "{{ item }}"
     state: installed
+  with_items:
+    - httpd
+    - mod_ssl
 
 - name: Ensure apache is running
   service:
@@ -11,3 +14,8 @@
     state: started
     enabled: yes
 
+- name: Configure a VirtualHost
+  copy:
+    src: etc/httpd/conf.d/ansibletest.conf
+    dest: /etc/httpd/conf.d/ansibletest.conf
+  notify: apache restart

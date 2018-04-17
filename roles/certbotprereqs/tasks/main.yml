@@ -1,0 +1,22 @@
+---
+# tasks file for certbotprereqs
+- name: Ensure epel is available
+  yum:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state: installed
+
+- name: Check if we've been tricked
+  stat:
+    path: /etc/redhat-release
+  register: tricked
+
+- name: Trick certbot into thinking this is RHEL
+  file:
+    path: /etc/redhat-release
+    state: touch
+  when: not tricked.stat.exists
+
+- name: Ensure git is installed
+  yum:
+    name: git
+    state: installed
