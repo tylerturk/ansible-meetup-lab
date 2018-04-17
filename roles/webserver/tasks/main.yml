@@ -8,6 +8,7 @@
     - httpd
     - php
     - php-mysql
+    - mod_ssl
 
 - name: Ensure apache is running
   service:
