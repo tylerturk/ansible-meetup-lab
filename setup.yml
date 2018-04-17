@@ -1,0 +1,8 @@
+---
+
+- hosts: web
+  gather_facts: false
+  become: yes
+  
+  roles:
+    - webserver

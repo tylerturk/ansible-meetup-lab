@@ -1,0 +1,13 @@
+---
+# tasks file for webserver
+- name: Install apache
+  yum:
+    name: httpd
+    state: installed
+
+- name: Ensure apache is running
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+
