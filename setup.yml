@@ -6,3 +6,10 @@
   
   roles:
     - webserver
+
+- hosts: db
+  gather_facts: false
+  become: Yes
+
+  roles:
+    - dbserver

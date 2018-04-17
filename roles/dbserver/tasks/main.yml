@@ -1,0 +1,46 @@
+---
+# tasks file for dbserver
+
+- name: Install MariaDB and MySQL-python
+  yum:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - mariadb
+    - mariadb-server
+    - MySQL-python
+
+- name: Ensure MariaDB is running
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Remove blank user accounts
+  mysql_user:
+    name: ''
+    host: localhost
+    state: absent
+
+- name: Set a password for the root user account
+  mysql_user:
+    name: root
+    password: something_secure
+
+- name: Set up the my.cnf
+  template:
+    src: root/my.cnf
+    dest: /root/.my.cnf
+
+- name: Create a MySQL database
+  mysql_db:
+    name: wordpress
+    state: present
+
+- name: Create a MySQL user for WordPress
+  mysql_user:
+    name: wordpress
+    password: something_more_secure
+    host: "%"
+    priv: "wordpress.*:ALL"
+

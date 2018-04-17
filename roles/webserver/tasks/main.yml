@@ -1,9 +1,13 @@
 ---
 # tasks file for webserver
-- name: Install apache
+- name: Install apache and php
   yum:
-    name: httpd
+    name: "{{ item }}"
     state: installed
+  with_items:
+    - httpd
+    - php
+    - php-mysql
 
 - name: Ensure apache is running
   service:
@@ -11,3 +15,46 @@
     state: started
     enabled: yes
 
+- name: Install unzip
+  yum:
+    name: unzip
+    state: installed
+
+- name: Download WordPress
+  get_url:
+    url: http://wordpress.org/latest.zip
+    dest: /var/www/latest.zip
+  register: wordpress_download
+
+- name: Extract WordPress
+  shell: unzip /var/www/latest.zip -d /var/www
+  when: wordpress_download.changed
+
+- name: Configure WordPress VirtualHost
+  copy:
+    src: etc/httpd/conf.d/ansibletest.conf
+    dest: /etc/httpd/conf.d/ansibletest.conf
+  notify: apache reload
+
+- name: Check if salts have been written
+  stat:
+    path: /var/www/wordpress/wp-secret-keys.php
+  register: secret_keys_php
+
+- name: Get a set of salts from api
+  uri:
+    url: https://api.wordpress.org/secret-key/1.1/salt/
+    return_content: yes
+  register: wp_salts
+  when: secret_keys_php.stat.exists == false
+
+- name: Write the wp-secret-keys.php file
+  template:
+    src: var/www/wordpress/wp-secret-keys.php
+    dest: /var/www/wordpress/wp-secret-keys.php
+  when: secret_keys_php.stat.exists == false
+
+- name: Write the wp-config.php file
+  template:
+    src: var/www/wordpress/wp-config.php
+    dest: /var/www/wordpress/wp-config.php
