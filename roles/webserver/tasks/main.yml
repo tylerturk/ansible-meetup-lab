@@ -8,14 +8,14 @@
     - httpd
     - mod_ssl
 
+- name: Configure a VirtualHost
+  template:
+    src: etc/httpd/conf.d/ansibletest.conf
+    dest: /etc/httpd/conf.d/ansibletest.conf
+  notify: apache restart
+
 - name: Ensure apache is running
   service:
     name: httpd
     state: started
     enabled: yes
-
-- name: Configure a VirtualHost
-  copy:
-    src: etc/httpd/conf.d/ansibletest.conf
-    dest: /etc/httpd/conf.d/ansibletest.conf
-  notify: apache restart
