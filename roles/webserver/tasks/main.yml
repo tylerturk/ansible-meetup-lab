@@ -10,7 +10,7 @@
 
 - name: Configure a VirtualHost
   template:
-    src: etc/httpd/conf.d/ansibletest.conf
+    src: files/etc/httpd/conf.d/ansibletest.conf
     dest: /etc/httpd/conf.d/ansibletest.conf
   notify: apache restart
 
