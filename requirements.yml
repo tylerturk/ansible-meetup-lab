@@ -1,0 +1,7 @@
+---
+# ansible requirements file
+#
+# ansible-galaxy install -r requirements.yml
+
+# Install a role from the Ansible Galaxy
+- src: geerlingguy.certbot
